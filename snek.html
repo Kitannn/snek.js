@@ -1,3 +1,5 @@
+<html>
+
 <canvas id="gc" width="400" height="400"></canvas>
 <script>
 window.onload=function() {
@@ -12,6 +14,8 @@ ax=ay=15;    //apple starting location
 xvel=yvel=0; //x velocity and y velocity
 trail=[];     //array for snake size
 tail = 5;    //snake tail
+score = 0;
+lastdirection=123;
 
 function game(){
     px+=xvel;
@@ -28,49 +32,72 @@ function game(){
     if(py>tc-1) {
         py=0;
     }
-    ctx.fillStyle="black";
+    //fil canvas color and size
+    ctx.fillStyle="#303030";
     ctx.fillRect(0,0,canv.width,canv.height);
     
-    ctx.fillStyle="lime";
+    //snake movement and game over condition
+    ctx.fillStyle="#009900";
     for(var i=0;i<trail.length; i++) {
         ctx.fillRect(trail[i].x*gs, trail[i].y*gs,gs-2,gs-2);
         if(trail[i].x==px && trail[i].y==py) {
             tail=5;
+            score=0;
         }
     }
     
     trail.push({x:px,y:py});
     while(trail.length>tail) {
         trail.shift();
+        document.getElementById("score").innerHTML = score;
     }
     
     if(ax==px && ay==py){
         tail++;
         ax=Math.floor(Math.random()*tc);
         ay=Math.floor(Math.random()*tc);
+        score+=5;
     }
     
-	ctx.fillStyle="red";
+	ctx.fillStyle="#A00000";
 	ctx.fillRect(ax*gs,ay*gs,gs-2,gs-2);
 }
 function keyPush(evt){ //input
     switch(evt.keyCode) {
         case 37: //left arrow key
+            if(lastdirection==39){ //so you can't reverse directions and lose by accident
+                break;
+            }
             xvel=-1;
             yvel=0;
+            lastdirection=37;
             break;
         case 38: //up arrow
+            if(lastdirection==40){
+                break;
+            }
             xvel=0;
             yvel=-1;
+            lastdirection=38;
             break;
         case 39: //right arrow
+            if(lastdirection==37){
+                break;
+            }
             xvel=1;
             yvel=0;
+            lastdirection=39;
             break;
         case 40: //down arrow
+            if(lastdirection==38){
+                break;
+            }
             xvel=0;
             yvel=1;
+            lastdirection=40;
             break;
     }
 }
 </script>
+    <p>Score:</p><p id="score"></p>    
+</html>
